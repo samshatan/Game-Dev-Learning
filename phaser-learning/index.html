@@ -99,16 +99,16 @@
       this.paddle.body.setVelocityX(0);
       this.paddle.body.setVelocityY(0);
       if(this.cursors.left.isDown){
-        this.paddle.body.setVelocityX(-200);
+        this.paddle.body.setVelocityX(-300);
       }
       else if(this.cursors.right.isDown){
-        this.paddle.body.setVelocityX(200);
+        this.paddle.body.setVelocityX(300);
       }
       else if(this.cursors.up.isDown){
-        this.paddle.body.setVelocityY(-200);
+        this.paddle.body.setVelocityY(-300);
       }
       else if(this.cursors.down.isDown){
-        this.paddle.body.setVelocityY(200);
+        this.paddle.body.setVelocityY(300);
       }
 
       if(this.ball.y > 600){
