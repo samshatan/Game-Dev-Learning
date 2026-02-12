@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Phaser Game </title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+  <script>
+    const config = {
+      type: Phaser.AUTO,
+      width: 800,
+      height: 600,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          gravity: {y: 100}
+        }
+      },
+      scene: {
+        preload: preload,
+        create: create,
+        update: update
+      }
+    };
+
+    const game = new Phaser.Game(config);
+
+    function preload() {
+      // Background
+      this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
+      
+      // Ball (Works)
+      this.load.image('ball', 'https://labs.phaser.io/assets/sprites/shinyball.png');
+      
+      // Paddle (Use this specific one)
+      this.load.image('paddle', 'https://labs.phaser.io/assets/games/breakout/paddle1.png');
+      
+      // Brick (Use a simple block)
+      this.load.image('brick', 'https://labs.phaser.io/assets/sprites/crate.png');
+    }
+
+    function create() {
+      this.gameOver = false;
+      // this.add.rectangle(400, 300, 800, 600, 0x87ceeb);
+      this.add.image(400,300,'sky');
+      // this.bricks = this.physics.add.staticGroup();
+
+      // for(let c=0;c<10;c++){
+      //   for(let r=0;r<4;r++){
+      //     // const brick = this.add.rectangle(80+c*70,50+r*50,60,20,0x00ff00);
+      //     const brick = this.add.image(80+c*70,50+r*50,'brick');
+      //     this.physics.add.existing(brick,true);
+      //     this.bricks.add(brick);
+      //   }
+      // }
+      this.bricks = this.physics.add.staticGroup({
+        key: 'brick',
+        frameQuantity: 40,
+        setScale: { x: 0.5, y: 0.5 },
+        gridAlign: { width: 10, cellWidth: 70, cellHeight: 40, x: 80, y: 50 }
+      });
+
+      this.score = 0;
+      this.scoreText = this.add.text(16,16,'Score: 0', {fontSize: '32px', fill: '#FFF'});
+
+
+
+      // const paddle = this.add.rectangle(700, 550, 100, 10, 0xff0000);
+      const paddle = this.add.image(400,550,'paddle');
+      this.cursors = this.input.keyboard.createCursorKeys();
+      this.paddle = paddle;
+      
+
+      // this.ball = this.add.circle(400,300,20,0xff0000);
+      this.ball = this.add.image(400,300,'ball');
+      this.physics.add.existing(this.ball);
+      this.ball.body.setCircle(16);
+      this.ball.body.setCollideWorldBounds(true);
+      this.ball.body.setBounce(1);
+      this.ball.body.setVelocity(Phaser.Math.Between(-200, 200), -300);
+
+      this.physics.add.existing(paddle);
+      paddle.body.setImmovable(true);
+
+      paddle.body.setAllowGravity(false);
+      paddle.body.setCollideWorldBounds(true);
+
+      this.physics.add.collider(this.ball,paddle);
+      this.physics.add.collider(this.ball,this.bricks,hitBrick, null, this);
+      this.physics.add.collider(this.bricks,paddle,null);
+      this.physics.world.checkCollision.down = false;
+    }
+
+    function update(){
+      if(this.gameOver){
+        return;
+      }
+      this.paddle.body.setVelocityX(0);
+      this.paddle.body.setVelocityY(0);
+      if(this.cursors.left.isDown){
+        this.paddle.body.setVelocityX(-200);
+      }
+      else if(this.cursors.right.isDown){
+        this.paddle.body.setVelocityX(200);
+      }
+      else if(this.cursors.up.isDown){
+        this.paddle.body.setVelocityY(-200);
+      }
+      else if(this.cursors.down.isDown){
+        this.paddle.body.setVelocityY(200);
+      }
+
+      if(this.ball.y > 600){
+        this.gameOver = true;
+        alert("Game Over");
+        location.reload();
+      }
+
+      if(this.bricks.countActive() === 0){
+        this.gameOver = true;
+        alert("You Win");
+        location.reload();
+      }
+    }
+
+    function hitBrick(ball,brick){
+      brick.destroy();
+      this.score+=10;
+      this.scoreText.setText('Score: ' + this.score);
+    }
+  </script>
+  
+</body>
+</html>
