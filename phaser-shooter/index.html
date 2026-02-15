@@ -59,8 +59,13 @@
     let gameOver = false;
     let scoreText;
     let score = 0;
+    let keyR;
 
     function create() {
+      gameOver = false;
+      score = 0;
+      keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+
       // Background
       this.add.tileSprite(400, 300, 800, 600, 'space');
 
@@ -71,7 +76,7 @@
 
       // Controls
       cursors = this.input.keyboard.createCursorKeys();
-      
+
       // Score
       scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
 
@@ -99,7 +104,7 @@
         yoyo: true,
         repeat: -1
       })
-      
+
       this.time.addEvent({
         delay: 2500,
         callback: moveEnemiesDown,
@@ -114,8 +119,8 @@
         loop: true
       });
 
-      this.physics.add.collider(bullets,enemies,hitEnemy,null,this);
-      this.physics.add.collider(player,enemies,hitPlayer,null,this);
+      this.physics.add.collider(bullets, enemies, hitEnemy, null, this);
+      this.physics.add.collider(player, enemies, hitPlayer, null, this);
       this.physics.add.overlap(player, enemyBullets, hitPlayer, null, this);
     }
 
@@ -135,65 +140,74 @@
         player.setVelocityY(300);
       }
 
-      if(cursors.space.isDown && time> lastFired){
-        var bullet = bullets.get(player.x,player.y-20);
-        if(bullet){
+      if (cursors.space.isDown && time > lastFired) {
+        var bullet = bullets.get(player.x, player.y - 20);
+        if (bullet) {
           bullet.setActive(true);
           bullet.setVisible(true);
           bullet.setVelocityY(-400);
           lastFired = time + 150;
         }
-      }
-
-      bullets.children.iterate(function(child){
-        if(child.active && child.y<-50){
-          child.setActive(false);
-          child.setVisible(false);
+        if (gameOver) {
+          if (keyR.isDown) {
+            this.scene.restart();
+            gameOver = false;
+            score = 0;
+          }
+          return;
         }
-      });
 
-      enemyBullets.children.iterate(function(child){
-        if(child.active && child.y > 600){
-          child.setActive(false);
-          child.setVisible(false);
-        }
-      });
-    }
+        bullets.children.iterate(function (child) {
+          if (child.active && child.y < -50) {
+            child.setActive(false);
+            child.setVisible(false);
+          }
+        });
 
-    function hitEnemy(bullet,enemy){
-      bullet.setActive(false);
-      bullet.setVisible(false);
-      enemy.disableBody(true,true);
-      score += 10;
-      scoreText.setText('Score: ' + score);
-    }
-
-    function hitPlayer(player, enemy) {
-      this.physics.pause();
-      player.setTint(0xff0000);
-      gameOver = true;
-    }
-
-    function moveEnemiesDown() {
-      enemies.children.iterate(function (child) {
-        child.y += 40;
-      });
-    }
-
-    function enemyFire(){
-      if(gameOver){
-        return;
-      }
-      var enemy = Phaser.Utils.Array.GetRandom(enemies.getChildren());
-      if(enemy.active){
-        var bullet = enemyBullets.get(enemy.x,enemy.y);
-        if(bullet){
-          bullet.setActive(true);
-          bullet.setVisible(true);
-          bullet.setVelocityY(400);
-        }
+        enemyBullets.children.iterate(function (child) {
+          if (child.active && child.y > 600) {
+            child.setActive(false);
+            child.setVisible(false);
+          }
+        });
       }
     }
+
+      function hitEnemy(bullet, enemy) {
+        bullet.setActive(false);
+        bullet.setVisible(false);
+        enemy.disableBody(true, true);
+        score += 10;
+        scoreText.setText('Score: ' + score);
+      }
+
+      function hitPlayer(player, enemy) {
+        this.physics.pause();
+        player.setTint(0xff0000);
+        gameOver = true;
+        this.add.text(400, 300, 'GAME OVER\nPress R to Restart', { fontSize: '48px', fill: '#f00', align: 'center' }).setOrigin(0.5);
+      }
+
+      function moveEnemiesDown() {
+        enemies.children.iterate(function (child) {
+          child.y += 40;
+        });
+      }
+
+      function enemyFire() {
+        if (gameOver) {
+          return;
+        }
+        var enemy = Phaser.Utils.Array.GetRandom(enemies.getChildren());
+        if (enemy.active) {
+          var bullet = enemyBullets.get(enemy.x, enemy.y);
+          if (bullet) {
+            bullet.setActive(true);
+            bullet.setVisible(true);
+            bullet.setVelocityY(400);
+          }
+        }
+      }
   </script>
 </body>
 

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title> Phaser Game </title>
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
 </head>
+
 <body>
   <script>
     const config = {
@@ -15,7 +17,7 @@
       physics: {
         default: 'arcade',
         arcade: {
-          gravity: {y: 100}
+          gravity: { y: 100 }
         }
       },
       scene: {
@@ -30,13 +32,13 @@
     function preload() {
       // Background
       this.load.image('sky', 'https://labs.phaser.io/assets/skies/space3.png');
-      
+
       // Ball (Works)
       this.load.image('ball', 'https://labs.phaser.io/assets/sprites/shinyball.png');
-      
+
       // Paddle (Use this specific one)
       this.load.image('paddle', 'https://labs.phaser.io/assets/games/breakout/paddle1.png');
-      
+
       // Brick (Use a simple block)
       this.load.image('brick', 'https://labs.phaser.io/assets/sprites/crate.png');
     }
@@ -44,7 +46,7 @@
     function create() {
       this.gameOver = false;
       // this.add.rectangle(400, 300, 800, 600, 0x87ceeb);
-      this.add.image(400,300,'sky');
+      this.add.image(400, 300, 'sky');
       // this.bricks = this.physics.add.staticGroup();
 
       // for(let c=0;c<10;c++){
@@ -62,18 +64,19 @@
       });
 
       this.score = 0;
-      this.scoreText = this.add.text(16,16,'Score: 0', {fontSize: '32px', fill: '#FFF'});
+      this.scoreText = this.add.text(16, 16, 'Score: 0', { fontSize: '32px', fill: '#FFF' });
 
 
 
       // const paddle = this.add.rectangle(700, 550, 100, 10, 0xff0000);
-      const paddle = this.add.image(400,550,'paddle');
+      const paddle = this.add.image(400, 550, 'paddle');
       this.cursors = this.input.keyboard.createCursorKeys();
+      this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
       this.paddle = paddle;
-      
+
 
       // this.ball = this.add.circle(400,300,20,0xff0000);
-      this.ball = this.add.image(400,300,'ball');
+      this.ball = this.add.image(400, 300, 'ball');
       this.physics.add.existing(this.ball);
       this.ball.body.setCircle(16);
       this.ball.body.setCollideWorldBounds(true);
@@ -86,50 +89,52 @@
       paddle.body.setAllowGravity(false);
       paddle.body.setCollideWorldBounds(true);
 
-      this.physics.add.collider(this.ball,paddle);
-      this.physics.add.collider(this.ball,this.bricks,hitBrick, null, this);
-      this.physics.add.collider(this.bricks,paddle,null);
+      this.physics.add.collider(this.ball, paddle);
+      this.physics.add.collider(this.ball, this.bricks, hitBrick, null, this);
+      this.physics.add.collider(this.bricks, paddle, null);
       this.physics.world.checkCollision.down = false;
     }
 
-    function update(){
-      if(this.gameOver){
+    function update() {
+      if (this.gameOver) {
+        if (this.keyR.isDown) {
+          this.scene.restart();
+        }
         return;
       }
       this.paddle.body.setVelocityX(0);
       this.paddle.body.setVelocityY(0);
-      if(this.cursors.left.isDown){
+      if (this.cursors.left.isDown) {
         this.paddle.body.setVelocityX(-300);
       }
-      else if(this.cursors.right.isDown){
+      else if (this.cursors.right.isDown) {
         this.paddle.body.setVelocityX(300);
       }
-      else if(this.cursors.up.isDown){
+      else if (this.cursors.up.isDown) {
         this.paddle.body.setVelocityY(-300);
       }
-      else if(this.cursors.down.isDown){
+      else if (this.cursors.down.isDown) {
         this.paddle.body.setVelocityY(300);
       }
 
-      if(this.ball.y > 600){
+      if (this.ball.y > 600) {
         this.gameOver = true;
-        alert("Game Over");
-        location.reload();
+        this.add.text(400, 300, 'GAME OVER\nPress R to Restart', { fontSize: '48px', fill: '#f00', align: 'center' }).setOrigin(0.5);
       }
 
-      if(this.bricks.countActive() === 0){
+      if (this.bricks.countActive() === 0) {
         this.gameOver = true;
-        alert("You Win");
-        location.reload();
+        this.add.text(400, 300, 'YOU WIN!\nPress R to Restart', { fontSize: '48px', fill: '#0f0', align: 'center' }).setOrigin(0.5);
       }
     }
 
-    function hitBrick(ball,brick){
+    function hitBrick(ball, brick) {
       brick.destroy();
-      this.score+=10;
+      this.score += 10;
       this.scoreText.setText('Score: ' + this.score);
     }
   </script>
-  
+
 </body>
+
 </html>
