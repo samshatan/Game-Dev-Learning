@@ -1,26 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First Game</title>
+  <title>My Arcade</title>
   <style>
-    body{
-        background: #222; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        height: 100vh; 
-        margin: 0; 
+    body {
+      background-color: #1a1a2e;
+      color: #fff;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
     }
-    canvas { 
-        background: #000000; 
-        border: 2px solid #fff; 
+
+    h1 {
+      font-size: 4rem;
+      color: #e94560;
+      text-shadow: 4px 4px #0f3460;
+      margin-bottom: 2rem;
+    }
+
+    .game-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .game-card {
+      background-color: #16213e;
+      border: 4px solid #0f3460;
+      border-radius: 10px;
+      padding: 20px;
+      width: 200px;
+      transition: transform 0.2s, background-color 0.2s;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .game-card:hover {
+      transform: translateY(-10px);
+      background-color: #e94560;
+      border-color: #fff;
+    }
+
+    .game-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .game-desc {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    .game-card:hover .game-desc {
+      color: #eee;
     }
   </style>
 </head>
+
 <body>
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
-  <script src="game.js"></script>
+  <h1>MY ARCADE</h1>
+
+  <div class="game-container">
+    <!-- Game 1: Vanilla Breakout -->
+    <a href="breakout.html" class="game-card">
+      <span class="game-title">Breakout</span>
+      <span class="game-desc">The Classic (Vanilla JS)</span>
+    </a>
+
+    <!-- Game 2: Phaser Breakout -->
+    <a href="phaser-learning/index.html" class="game-card">
+      <span class="game-title">Phaser Breakout</span>
+      <span class="game-desc">Powered by Phaser 3</span>
+    </a>
+
+    <!-- Game 3: Platformer -->
+    <a href="phaser-platformer/index.html" class="game-card">
+      <span class="game-title">Platformer</span>
+      <span class="game-desc">Jump & Collect Stars</span>
+    </a>
+
+    <!-- Game 4: Space Shooter -->
+    <a href="phaser-shooter/index.html" class="game-card">
+      <span class="game-title">Space Shooter</span>
+      <span class="game-desc">Defend the Galaxy!</span>
+    </a>
+  </div>
+
+  <p style="margin-top: 3rem; color: #555;">Built with Phaser 3 & JavaScript</p>
 </body>
+
 </html>
